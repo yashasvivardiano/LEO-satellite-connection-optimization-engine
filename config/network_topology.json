@@ -1,0 +1,215 @@
+{
+  "ground_stations": {
+    "goldstone": {
+      "name": "Goldstone Deep Space Communications Complex",
+      "location": {
+        "lat": 35.426667,
+        "lon": -116.890000
+      },
+      "type": "deep_space",
+      "antennas": ["DSS-14", "DSS-24", "DSS-25"],
+      "capabilities": ["deep_space", "leo", "geo"],
+      "status": "operational",
+      "capacity_gbps": 100
+    },
+    "canberra": {
+      "name": "Canberra Deep Space Communication Complex",
+      "location": {
+        "lat": -35.401389,
+        "lon": 148.981667
+      },
+      "type": "deep_space",
+      "antennas": ["DSS-34", "DSS-35", "DSS-36"],
+      "capabilities": ["deep_space", "leo", "geo"],
+      "status": "operational",
+      "capacity_gbps": 100
+    },
+    "madrid": {
+      "name": "Madrid Deep Space Communication Complex",
+      "location": {
+        "lat": 40.427222,
+        "lon": -4.248333
+      },
+      "type": "deep_space",
+      "antennas": ["DSS-54", "DSS-55", "DSS-56"],
+      "capabilities": ["deep_space", "leo", "geo"],
+      "status": "operational",
+      "capacity_gbps": 100
+    },
+    "kourou": {
+      "name": "Kourou Space Center",
+      "location": {
+        "lat": 5.239444,
+        "lon": -52.768333
+      },
+      "type": "launch_control",
+      "antennas": ["KOU-1", "KOU-2"],
+      "capabilities": ["leo", "geo", "launch_control"],
+      "status": "operational",
+      "capacity_gbps": 50
+    },
+    "svalbard": {
+      "name": "Svalbard Satellite Station",
+      "location": {
+        "lat": 78.229722,
+        "lon": 15.407778
+      },
+      "type": "polar_orbit",
+      "antennas": ["SG1", "SG2"],
+      "capabilities": ["leo", "polar_orbit"],
+      "status": "operational",
+      "capacity_gbps": 25
+    },
+    "hawaii": {
+      "name": "Hawaii Tracking Station",
+      "location": {
+        "lat": 21.561944,
+        "lon": -158.066667
+      },
+      "type": "tracking",
+      "antennas": ["HAW-1"],
+      "capabilities": ["leo", "geo", "tracking"],
+      "status": "operational",
+      "capacity_gbps": 30
+    },
+    "estrack_new_norcia": {
+      "name": "ESA New Norcia Station",
+      "location": {
+        "lat": -31.048,
+        "lon": 116.191
+      },
+      "type": "deep_space",
+      "antennas": ["NNO-1"],
+      "capabilities": ["deep_space", "leo"],
+      "status": "operational",
+      "capacity_gbps": 40
+    },
+    "estrack_cebreros": {
+      "name": "ESA Cebreros Station",
+      "location": {
+        "lat": 40.452,
+        "lon": -4.368
+      },
+      "type": "deep_space",
+      "antennas": ["CEB-1"],
+      "capabilities": ["deep_space", "leo"],
+      "status": "operational",
+      "capacity_gbps": 40
+    },
+    "estrack_malargue": {
+      "name": "ESA Malargüe Station",
+      "location": {
+        "lat": -35.776,
+        "lon": -69.398
+      },
+      "type": "deep_space",
+      "antennas": ["MAL-1"],
+      "capabilities": ["deep_space", "leo"],
+      "status": "operational",
+      "capacity_gbps": 40
+    },
+    "wallops": {
+      "name": "Wallops Flight Facility",
+      "location": {
+        "lat": 37.940,
+        "lon": -75.466
+      },
+      "type": "launch_control",
+      "antennas": ["WFF-1", "WFF-2"],
+      "capabilities": ["leo", "launch_control"],
+      "status": "operational",
+      "capacity_gbps": 35
+    }
+  },
+  "wired_connections": {
+    "goldstone_canberra": {
+      "endpoints": ["goldstone", "canberra"],
+      "type": "fiber_optic",
+      "capacity_gbps": 40,
+      "latency_ms": 180,
+      "redundancy": "primary",
+      "status": "operational"
+    },
+    "canberra_madrid": {
+      "endpoints": ["canberra", "madrid"],
+      "type": "fiber_optic",
+      "capacity_gbps": 40,
+      "latency_ms": 220,
+      "redundancy": "primary",
+      "status": "operational"
+    },
+    "madrid_kourou": {
+      "endpoints": ["madrid", "kourou"],
+      "type": "satellite_link",
+      "capacity_gbps": 10,
+      "latency_ms": 250,
+      "redundancy": "backup",
+      "status": "operational"
+    },
+    "kourou_hawaii": {
+      "endpoints": ["kourou", "hawaii"],
+      "type": "undersea_cable",
+      "capacity_gbps": 20,
+      "latency_ms": 150,
+      "redundancy": "primary",
+      "status": "operational"
+    },
+    "hawaii_goldstone": {
+      "endpoints": ["hawaii", "goldstone"],
+      "type": "fiber_optic",
+      "capacity_gbps": 30,
+      "latency_ms": 50,
+      "redundancy": "primary",
+      "status": "operational"
+    },
+    "svalbard_madrid": {
+      "endpoints": ["svalbard", "madrid"],
+      "type": "satellite_link",
+      "capacity_gbps": 15,
+      "latency_ms": 300,
+      "redundancy": "backup",
+      "status": "operational"
+    },
+    "madrid_cebreros": {
+      "endpoints": ["madrid", "estrack_cebreros"],
+      "type": "fiber_optic",
+      "capacity_gbps": 25,
+      "latency_ms": 5,
+      "redundancy": "primary",
+      "status": "operational"
+    },
+    "canberra_new_norcia": {
+      "endpoints": ["canberra", "estrack_new_norcia"],
+      "type": "fiber_optic",
+      "capacity_gbps": 25,
+      "latency_ms": 15,
+      "redundancy": "primary",
+      "status": "operational"
+    },
+    "kourou_malargue": {
+      "endpoints": ["kourou", "estrack_malargue"],
+      "type": "satellite_link",
+      "capacity_gbps": 12,
+      "latency_ms": 180,
+      "redundancy": "backup",
+      "status": "operational"
+    },
+    "wallops_goldstone": {
+      "endpoints": ["wallops", "goldstone"],
+      "type": "fiber_optic",
+      "capacity_gbps": 35,
+      "latency_ms": 80,
+      "redundancy": "primary",
+      "status": "operational"
+    },
+    "wallops_madrid": {
+      "endpoints": ["wallops", "madrid"],
+      "type": "undersea_cable",
+      "capacity_gbps": 20,
+      "latency_ms": 120,
+      "redundancy": "backup",
+      "status": "operational"
+    }
+  },
+  "last_updated": "2024-12-19T10:30:00.000Z"
+}

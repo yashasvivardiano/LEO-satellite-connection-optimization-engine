@@ -1,0 +1,19 @@
+{
+  "tensorflow": "2.15.0",
+  "pandas": "2.2.3",
+  "numpy": "1.26.4",
+  "feature_columns": [
+    "wired_latency_ms",
+    "satellite_latency_ms",
+    "wired_jitter_ms",
+    "satellite_jitter_ms",
+    "wired_packet_loss_pct",
+    "satellite_packet_loss_pct",
+    "wired_bandwidth_mbps",
+    "satellite_bandwidth_mbps",
+    "wired_quality_cost",
+    "satellite_quality_cost"
+  ],
+  "window": 12,
+  "horizon": 6
+}

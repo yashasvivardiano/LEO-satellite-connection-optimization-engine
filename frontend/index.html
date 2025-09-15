@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Network Stabilization - Investor Dashboard</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Local Stylesheets -->
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-satellite-dish"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>AI Network Stabilization</h1>
+                    <p>Intelligent Hybrid Network Management</p>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="btn btn-primary" onclick="startSimulation()">
+                    <i class="fas fa-play"></i> Start
+                </button>
+                <button class="btn btn-secondary" onclick="stopSimulation()">
+                    <i class="fas fa-pause"></i> Stop
+                </button>
+                <button class="btn btn-danger" onclick="resetSimulation()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>System Active</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Active Path</span>
+                    <div class="metric-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                </div>
+                <div class="metric-value" id="activePath">WIRED</div>
+                <div class="metric-subtitle">
+                    <i class="fas fa-check-circle"></i> Optimal
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Wired Latency</span>
+                    <div class="metric-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                </div>
+                <div class="metric-value" id="wiredLatency">32.8 ms</div>
+                <div class="metric-subtitle trend-up">
+                    <i class="fas fa-arrow-up"></i> 6.1 jitter
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Satellite Latency</span>
+                    <div class="metric-icon">
+                        <i class="fas fa-satellite"></i>
+                    </div>
+                </div>
+                <div class="metric-value" id="satelliteLatency">43.9 ms</div>
+                <div class="metric-subtitle trend-up">
+                    <i class="fas fa-arrow-up"></i> 8.0 jitter
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">AI Confidence</span>
+                    <div class="metric-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                </div>
+                <div class="metric-value" id="aiConfidence">60.0%</div>
+                <div class="metric-subtitle trend-up">
+                    <i class="fas fa-arrow-up"></i> Normal
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D Globe Container -->
+        <div class="globe-container">
+            <div class="globe-header">
+                <div class="globe-title">
+                    <div class="globe-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    Global Network Topology
+                </div>
+                <div class="globe-controls">
+                    <button class="globe-btn" title="Camera">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                    <button class="globe-btn" title="Zoom In">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <button class="globe-btn" title="Zoom Out">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button class="globe-btn" title="Pan">
+                        <i class="fas fa-arrows-alt"></i>
+                    </button>
+                    <button class="globe-btn" title="Home">
+                        <i class="fas fa-home"></i>
+                    </button>
+                    <button class="globe-btn" title="Chart">
+                        <i class="fas fa-chart-bar"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="globeChart">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>Loading 3D Network Visualization...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <div class="chart-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        Latency Comparison
+                    </div>
+                </div>
+                <canvas id="latencyChart" class="chart-canvas"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <div class="chart-icon">
+                            <i class="fas fa-chart-area"></i>
+                        </div>
+                        Packet Loss
+                    </div>
+                </div>
+                <canvas id="lossChart" class="chart-canvas"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <div class="chart-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        Bandwidth
+                    </div>
+                </div>
+                <canvas id="bandwidthChart" class="chart-canvas"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <div class="chart-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        Quality Cost
+                    </div>
+                </div>
+                <canvas id="costChart" class="chart-canvas"></canvas>
+            </div>
+        </div>
+
+        <!-- Alerts Container -->
+        <div class="alerts-container">
+            <div class="alerts-header">
+                <div class="alerts-title">
+                    <div class="alerts-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    System Alerts
+                </div>
+            </div>
+            <div id="alertsContainer">
+                <!-- Alerts will be dynamically added here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Local JavaScript -->
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
