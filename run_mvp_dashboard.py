@@ -30,8 +30,32 @@ def main():
         print(f"❌ Dashboard not found at {dashboard_path}")
         return 1
     
+    # Try to find an available port
+    import socket
+    
+    def is_port_available(port):
+        """Check if a port is available."""
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            try:
+                s.bind(('localhost', port))
+                return True
+            except OSError:
+                return False
+    
+    # Try ports starting from 8501
+    port = 8501
+    max_attempts = 10
+    for attempt in range(max_attempts):
+        if is_port_available(port):
+            break
+        print(f"⚠️  Port {port} is in use, trying {port + 1}...")
+        port += 1
+    else:
+        print(f"❌ Could not find an available port after {max_attempts} attempts")
+        return 1
+    
     print(f"📊 Launching dashboard: {dashboard_path}")
-    print("\n🌐 The dashboard will open in your browser at: http://localhost:8501")
+    print(f"\n🌐 The dashboard will open in your browser at: http://localhost:{port}")
     print("⏹️  Press Ctrl+C to stop the dashboard")
     print("=" * 60)
     
@@ -40,7 +64,7 @@ def main():
         subprocess.run([
             sys.executable, "-m", "streamlit", "run", 
             str(dashboard_path),
-            "--server.port", "8501",
+            "--server.port", str(port),
             "--server.address", "localhost"
         ])
     except KeyboardInterrupt:
