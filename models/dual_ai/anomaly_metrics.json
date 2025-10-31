@@ -1,5 +1,5 @@
 {
-  "train_mean_error": 0.008585646488805486,
-  "train_99pct_threshold": 0.030513723672979196,
-  "test_mean_error": 0.008847945294437803
+  "train_99pct_threshold": 1.124712849429595,
+  "model_type": "simple_lstm_autoencoder",
+  "training_samples": 988
 }

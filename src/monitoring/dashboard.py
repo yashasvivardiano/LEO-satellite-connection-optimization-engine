@@ -603,33 +603,46 @@ def main():
         
         # Simulation controls
         st.subheader("Simulation")
-        if st.button("▶️ Start Simulation", disabled=st.session_state.is_running):
+        if st.button("▶️ Start Simulation", disabled=st.session_state.is_running, key="start_btn"):
             st.session_state.is_running = True
+            st.success("✅ Starting simulation...")
             st.rerun()
         
-        if st.button("⏸️ Stop Simulation", disabled=not st.session_state.is_running):
+        if st.button("⏸️ Stop Simulation", disabled=not st.session_state.is_running, key="stop_btn"):
             st.session_state.is_running = False
             st.rerun()
         
-        if st.button("🔄 Reset Simulation"):
+        if st.button("🔄 Reset Simulation", key="reset_btn"):
             st.session_state.simulation_data = []
             st.session_state.alerts = []
             st.session_state.simulator = create_simulator()
+            st.session_state.is_running = False
             st.rerun()
+        
+        # Refresh button (only shown when simulation is running)
+        if st.session_state.is_running:
+            st.divider()
+            if st.button("🔄 Refresh Data", help="Click to update simulation data", key="refresh_btn"):
+                st.rerun()
         
         # AI controls
         st.subheader("AI Settings")
-        st.session_state.auto_switch = st.checkbox("Auto Path Switching", value=st.session_state.auto_switch)
+        auto_switch_new = st.checkbox("Auto Path Switching", value=st.session_state.auto_switch)
+        # Only update and rerun if checkbox actually changed
+        if auto_switch_new != st.session_state.auto_switch:
+            st.session_state.auto_switch = auto_switch_new
         
         # Manual path switching
         st.subheader("Manual Control")
-        if st.button("Switch to Wired"):
-            st.session_state.simulator.switch_path("wired")
-            st.rerun()
+        if st.button("Switch to Wired", key="switch_wired_btn"):
+            if st.session_state.is_running:
+                st.session_state.simulator.switch_path("wired")
+                st.rerun()
         
-        if st.button("Switch to Satellite"):
-            st.session_state.simulator.switch_path("satellite")
-            st.rerun()
+        if st.button("Switch to Satellite", key="switch_satellite_btn"):
+            if st.session_state.is_running:
+                st.session_state.simulator.switch_path("satellite")
+                st.rerun()
         
         # Statistics
         st.subheader("Statistics")
@@ -645,47 +658,97 @@ def main():
         metrics_placeholder = st.empty()
         charts_placeholder = st.empty()
         events_placeholder = st.empty()
-        
-        # Generate new data
-        data_point, events = generate_network_data()
-        
-        # Display metrics in placeholder
-        with metrics_placeholder.container():
-            create_metrics_display(data_point)
-        
-        # Display 3D globe
         globe_placeholder = st.empty()
-        with globe_placeholder.container():
-            st.subheader("🌍 Global Network Topology")
+        status_placeholder = st.empty()
+        
+        try:
+            # Generate new data
+            with status_placeholder.container():
+                st.info("🔄 Generating network data and running AI analysis...")
+            
             try:
-                globe_fig = create_3d_globe(data_point)
-                st.plotly_chart(globe_fig, use_container_width=True)
+                # Generate data (AI predictions may take a moment)
+                data_point, events = generate_network_data()
+                status_placeholder.empty()  # Clear status once data is generated
             except Exception as e:
-                st.error(f"3D Globe Error: {e}")
-                st.info("Falling back to 2D network visualization...")
-                create_2d_network_visualization(data_point)
-        
-        # Display charts in placeholder
-        if st.session_state.simulation_data:
-            data_df = pd.DataFrame(st.session_state.simulation_data)
-            with charts_placeholder.container():
-                st.subheader("📊 Network Performance Charts")
-                create_network_charts(data_df)
+                status_placeholder.empty()
+                with metrics_placeholder.container():
+                    st.error(f"❌ Error generating network data: {str(e)}")
+                    import traceback
+                    with st.expander("🔍 Show Error Details"):
+                        st.code(traceback.format_exc())
+                    st.warning("💡 Try clicking 'Reset Simulation' to restart")
+                # Show error in status too
+                status_placeholder.error("❌ Failed to generate data - see error above")
+                return  # Stop here, don't try to display anything else
+            
+            # Display metrics in placeholder
+            with metrics_placeholder.container():
+                try:
+                    # Debug: Show we have data
+                    if data_point:
+                        create_metrics_display(data_point)
+                    else:
+                        st.error("⚠️ No data point generated!")
+                except Exception as e:
+                    st.error(f"Error displaying metrics: {e}")
+                    import traceback
+                    st.code(traceback.format_exc())
+                    # Try to show raw data if metrics fail
+                    st.write("**Debug - Raw data_point:**", data_point if 'data_point' in locals() else "Not available")
+            
+            # Display 3D globe (lazy load - only show if explicitly requested or first time)
+            show_globe = st.session_state.get('show_globe', True)
+            with globe_placeholder.container():
+                col1, col2 = st.columns([3, 1])
+                with col1:
+                    st.subheader("🌍 Global Network Topology")
+                with col2:
+                    show_globe = st.checkbox("Show 3D Globe", value=show_globe, key="globe_toggle")
+                    st.session_state.show_globe = show_globe
                 
-                # Add path switching timeline
-                st.subheader("🔄 Path Switching Timeline")
-                create_path_switching_chart(data_df)
+                if show_globe:
+                    try:
+                        with st.spinner("Generating 3D visualization..."):
+                            globe_fig = create_3d_globe(data_point)
+                            st.plotly_chart(globe_fig, use_container_width=True)
+                    except Exception as e:
+                        st.warning(f"3D visualization issue: {str(e)}. Using 2D visualization...")
+                        create_2d_network_visualization(data_point)
+                else:
+                    # Always show 2D when 3D is disabled
+                    create_2d_network_visualization(data_point)
+            
+            # Display charts in placeholder
+            if st.session_state.simulation_data:
+                data_df = pd.DataFrame(st.session_state.simulation_data)
+                with charts_placeholder.container():
+                    st.subheader("📊 Network Performance Charts")
+                    create_network_charts(data_df)
+                    
+                    # Add path switching timeline
+                    st.subheader("🔄 Path Switching Timeline")
+                    create_path_switching_chart(data_df)
+            
+            # Display events in placeholder
+            if events and events.get('active_events'):
+                with events_placeholder.container():
+                    st.subheader("⚡ Active Events")
+                    for event in events['active_events']:
+                        st.warning(f"**{event['type'].upper()}**: {event['description']} (Remaining: {event['remaining_seconds']:.0f}s)")
+            
+            # Show status
+            with status_placeholder.container():
+                st.success("✅ Simulation data generated successfully!")
+                st.info("💡 **Tip:** Disable 'Show 3D Globe' to speed up refreshes. AI analysis takes a few seconds.")
         
-        # Display events in placeholder
-        if events['active_events']:
-            with events_placeholder.container():
-                st.subheader("⚡ Active Events")
-                for event in events['active_events']:
-                    st.warning(f"**{event['type'].upper()}**: {event['description']} (Remaining: {event['remaining_seconds']:.0f}s)")
-        
-        # Auto-refresh
-        time.sleep(2)
-        st.rerun()
+        except Exception as e:
+            with metrics_placeholder.container():
+                st.error(f"❌ Unexpected error in simulation: {e}")
+                import traceback
+                with st.expander("🔍 Show Error Details"):
+                    st.code(traceback.format_exc())
+                st.warning("💡 Try clicking 'Reset Simulation' to restart")
     
     else:
         # Welcome screen

@@ -50,8 +50,14 @@ class PredictiveNetworkAnalyzer:
             # Load predictive model
             model_path = self.model_dir / "predictive_clf.keras"
             if model_path.exists():
-                self.predictive_model = tf.keras.models.load_model(str(model_path))
-                logger.info(f"Loaded predictive model from {model_path}")
+                try:
+                    self.predictive_model = tf.keras.models.load_model(str(model_path))
+                    logger.info(f"Loaded predictive model from {model_path}")
+                except Exception as model_error:
+                    logger.warning(f"Failed to load predictive model: {model_error}")
+                    logger.info("This is likely due to TensorFlow version mismatch. Using fallback prediction.")
+                    self.predictive_model = None
+                    return
             else:
                 logger.error(f"Predictive model not found at {model_path}")
                 return

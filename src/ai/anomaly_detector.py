@@ -50,8 +50,14 @@ class NetworkAnomalyDetector:
             # Load autoencoder model
             model_path = self.model_dir / "autoencoder.keras"
             if model_path.exists():
-                self.autoencoder = tf.keras.models.load_model(str(model_path))
-                logger.info(f"Loaded autoencoder from {model_path}")
+                try:
+                    self.autoencoder = tf.keras.models.load_model(str(model_path))
+                    logger.info(f"Loaded autoencoder from {model_path}")
+                except Exception as model_error:
+                    logger.warning(f"Failed to load autoencoder model: {model_error}")
+                    logger.info("This is likely due to TensorFlow version mismatch. Using fallback detection.")
+                    self.autoencoder = None
+                    return
             else:
                 logger.error(f"Autoencoder model not found at {model_path}")
                 return
