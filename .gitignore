@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 # Python
-=======
-﻿# Python
->>>>>>> 7e6c19ea118529760b754d7d245ba87c92f57541
 __pycache__/
 *.py[cod]
 *$py.class
@@ -50,14 +46,6 @@ Thumbs.db
 .streamlit/credentials.toml
 .streamlit/cache/
 
-<<<<<<< HEAD
-# Model files (optional - comment out if you want to track these)
-# *.keras
-# *.pkl
-# *.h5
-
-=======
->>>>>>> 7e6c19ea118529760b754d7d245ba87c92f57541
 # Logs
 *.log
 
@@ -68,7 +56,3 @@ htmlcov/
 # Environment variables
 .env
 .env.local
-<<<<<<< HEAD
-
-=======
->>>>>>> 7e6c19ea118529760b754d7d245ba87c92f57541
